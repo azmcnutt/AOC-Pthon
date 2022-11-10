@@ -1,7 +1,7 @@
-from email.policy import strict
 import os
 import sys
 import copy
+from pprint import pprint
 
 # AOC 2020 Day 21 Part 1: Determine the number of ingredients for each items and total where ingredients do not contain allergens.  Sample data = 5
 
@@ -25,17 +25,27 @@ for x in range(0,len(myset)):
     myset[x][0]=copy.deepcopy(myset[x][0].split(' '))
     myset[x][1]=copy.deepcopy(myset[x][1].split(', '))
 
-ingredientsPossibleAllergens={}
+tested_ing=[]
+noallergen_ing=[]
+ing_alg={}
+int_algremove=[]
 
-
-
-for x in myset:
-    for ing in x[0]:
-        if ing not in ingredientsPossibleAllergens:
-            ingredientsPossibleAllergens[ing]=copy.deepcopy(x[1])
+# Create a dictionary (ing_alg) of each menu ingredient and all possible allergens
+# probably an easy way to do this, but this works.  Besides, I like spaghetti.
+for menuidx in range(0,len(myset)):
+    pprint(f'{myset[menuidx]}')
+    for ingidx in range(0,len(myset[menuidx][0])):
+        print(f'    {myset[menuidx][0][ingidx]}')
+        if myset[menuidx][0][ingidx] not in tested_ing:
+            tested_ing.append(copy.deepcopy(myset[menuidx][0][ingidx]))
+            ing_alg[myset[menuidx][0][ingidx]] = copy.deepcopy(myset[menuidx][1])
         else:
-            for y in x[1]:
-                if y not in ingredientsPossibleAllergens[ing]:
-                    ingredientsPossibleAllergens[ing].append(y)
+            for alg in myset[menuidx][1]:
+                if alg not in ing_alg[myset[menuidx][0][ingidx]]:
+                    ing_alg[myset[menuidx][0][ingidx]].append(copy.deepcopy(alg))
 
-print(ingredientsPossibleAllergens)
+
+# Now iterate through each ingredient and if the it exists without one of the allergens, remove the allergen
+
+
+pprint(ing_alg)
