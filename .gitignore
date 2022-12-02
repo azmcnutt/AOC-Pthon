@@ -130,3 +130,6 @@ dmypy.json
 
 # AOC Input Files
 */input*.txt
+
+# VS Code
+.vscode/*
