@@ -1,0 +1,18 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+      {
+        "label": "Run pipenv shell",
+        "type": "shell",
+        "command": "pipenv shell",
+        "windows": {
+          "command": "pipenv shell"
+        },
+        "presentation": {
+          "reveal": "always",
+          "panel": "new"
+        },
+        //"runOptions": { "runOn": "folderOpen" }
+      }
+    ]
+  }

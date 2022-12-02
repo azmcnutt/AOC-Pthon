@@ -1,0 +1,13 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+advent-of-code-data = "*"
+browser-cookie3 = "*"
+
+[dev-packages]
+pylint = "*"
+
+[requires]
