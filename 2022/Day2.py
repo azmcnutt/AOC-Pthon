@@ -2,6 +2,7 @@ import os
 import sys
 import copy
 from pprint import pprint
+from aocd import get_data
 import time
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
@@ -73,8 +74,8 @@ import time
 myset = ['A Y\n','B X\n','C Z\n',]
 
 # once the test data provides the right answer: replace test data with data from the puzzle input
-myset = open(os.path.join(sys.path[0], 'input2.txt')).readlines()
-
+# myset = open(os.path.join(sys.path[0], 'input2.txt')).readlines()
+myset = get_data(day=2, year=2022).splitlines()
 # remove line feeds from the list
 for x in range(0,len(myset)):
     myset[x] = myset[x].strip()
@@ -83,6 +84,8 @@ for x in range(0,len(myset)):
 startime = time.time()
 
 total_score = 0
+
+# Dict to convert ABC, XYZ to Rock Paper Scissor.
 rps = {
     'A': 'R',
     'B': 'P',
@@ -91,12 +94,15 @@ rps = {
     'Y': 'P',
     'Z': 'S',
 }
+
+# Dict for the score if you used R, P, or S
 score = {
     'R': 1,
     'P': 2,
     'S': 3,
 }
 
+# loop through the games to determine score if X Y Z is played as R, P, S
 for game in myset:
     opp, me = game.split(' ')
     opp = rps[opp]
@@ -121,6 +127,8 @@ print(f'Part 1: Me score: {total_score}.  {time.time() - startime}')
 # part 2
 startime = time.time()
 total_score = 0
+
+# loop through the games using X, Y, Z, as Win, Lie, Lose.
 for game in myset:
     opp, me = game.split(' ')
     opp = rps[opp]
