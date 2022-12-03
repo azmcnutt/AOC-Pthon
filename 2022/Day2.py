@@ -74,7 +74,6 @@ import time
 myset = ['A Y\n','B X\n','C Z\n',]
 
 # once the test data provides the right answer: replace test data with data from the puzzle input
-# myset = open(os.path.join(sys.path[0], 'input2.txt')).readlines()
 myset = get_data(day=2, year=2022).splitlines()
 # remove line feeds from the list
 for x in range(0,len(myset)):

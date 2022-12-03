@@ -2,6 +2,7 @@ import os
 import sys
 import copy
 from pprint import pprint
+from aocd import get_data
 import time
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
@@ -67,7 +68,7 @@ myset = ['1000\n','2000\n','3000\n','\n','4000\n','\n','5000\n',\
     '6000\n','\n','7000\n','8000\n','9000\n','\n','10000\n',]
 
 # once the test data provides the right answer: replace test data with data from the puzzle input
-myset = open(os.path.join(sys.path[0], 'input1.txt')).readlines()
+myset = get_data(day=1, year=2022).splitlines()
 
 # add an extra LF to my set so the final elf will be calculated
 myset.append('\n')
