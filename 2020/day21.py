@@ -1,51 +1,61 @@
 import os
 import sys
 import copy
+import time
+from aocd import get_data
+from aocd import submit
 from pprint import pprint
 
 # AOC 2020 Day 21 Part 1: Determine the number of ingredients for each items and total where ingredients do not contain allergens.  Sample data = 5
 
-# load sample data, copied and pasted from the site into list.  Each list item is one line of input
-myset = ['mxmxvkd kfcds sqjhc nhms (contains dairy, fish)\n','trh fvjkl sbzzf mxmxvkd (contains dairy)\n',
-    'sqjhc fvjkl (contains soy)\n','sqjhc mxmxvkd sbzzf (contains fish)\n',]
-# replace test data with data from the puzzle input
-# myset = open(os.path.join(sys.path[0], 'input21.txt')).readlines()
+myset = """mxmxvkd kfcds sqjhc nhms (contains dairy, fish)
+trh fvjkl sbzzf mxmxvkd (contains dairy)
+sqjhc fvjkl (contains soy)
+sqjhc mxmxvkd sbzzf (contains fish)""".splitlines()
+
+# once the test data provides the right answer: replace test data with data from the puzzle input
+myset = get_data(day=21, year=2020).splitlines()
 
 # remove line feeds from the list
 for x in range(0,len(myset)):
     myset[x] = myset[x].strip()
+# pprint(myset)
+starttime = time.time()
+all_ingredients = []
+all_allergens = {}
 
-# Split the data into a list of two lists'.
-# each list item will contain a list with two items: 
-#   A list of ingredients
-#   A list of allergens
 for x in range(0,len(myset)):
     myset[x] = myset[x].split(' (contains ')
     myset[x][1] = myset[x][1].strip(')')
     myset[x][0]=copy.deepcopy(myset[x][0].split(' '))
     myset[x][1]=copy.deepcopy(myset[x][1].split(', '))
-
-tested_ing=[]
-noallergen_ing=[]
-ing_alg={}
-int_algremove=[]
-
-# Create a dictionary (ing_alg) of each menu ingredient and all possible allergens
-# probably an easy way to do this, but this works.  Besides, I like spaghetti.
-for menuidx in range(0,len(myset)):
-    pprint(f'{myset[menuidx]}')
-    for ingidx in range(0,len(myset[menuidx][0])):
-        print(f'    {myset[menuidx][0][ingidx]}')
-        if myset[menuidx][0][ingidx] not in tested_ing:
-            tested_ing.append(copy.deepcopy(myset[menuidx][0][ingidx]))
-            ing_alg[myset[menuidx][0][ingidx]] = copy.deepcopy(myset[menuidx][1])
+    all_ingredients += copy.deepcopy(myset[x][0])
+    for allergen in myset[x][1]:
+        if allergen in all_allergens:
+            all_allergens[allergen] &= set(copy.deepcopy(myset[x][0]))
         else:
-            for alg in myset[menuidx][1]:
-                if alg not in ing_alg[myset[menuidx][0][ingidx]]:
-                    ing_alg[myset[menuidx][0][ingidx]].append(copy.deepcopy(alg))
+            all_allergens[allergen] = set(copy.deepcopy(myset[x][0]))
+allergen_ingredient = set([x for val in all_allergens.values() for x in val])
+safe_ingredient = [ing for ing in all_ingredients if ing not in allergen_ingredient]
+print(f'Part 1:  There are {len(safe_ingredient)} ingredients without allergens.    {time.time() - starttime}')
 
+allergen_dict = {}
 
-# Now iterate through each ingredient and if the it exists without one of the allergens, remove the allergen
-
-
-pprint(ing_alg)
+#print(all_allergens)
+while all_allergens:
+    for a,b in all_allergens.items():
+        if len(b) == 1:
+            allergen_dict[a] = list(b)[0]
+            del all_allergens[a]
+            for x in all_allergens:
+                if list(b)[0] in all_allergens[x]:
+                    all_allergens[x].remove(list(b)[0])
+            
+            break;
+p2answer = ''
+for a,b in sorted(allergen_dict.items()):
+    if len(p2answer) > 1:
+        p2answer += ','
+    p2answer += b
+print(f'Part 2:  The allergens, sorted are {p2answer}.    {time.time() - starttime}')
+submit(p2answer, part='b', day=21, year=2020)
