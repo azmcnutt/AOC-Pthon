@@ -72,13 +72,16 @@ myset = get_data(day=1, year=2022).splitlines()
 
 # add an extra LF to my set so the final elf will be calculated
 myset.append('\n')
+startime = time.time()
 
 # remove line feeds from the list
-for x in range(0,len(myset)):
-    myset[x] = myset[x].strip()
+myset = [_.strip() for _ in myset]
+#for x in range(0,len(myset)):
+#   myset[x] = myset[x].strip()
+
+#print(myset)
 
 # get the time we start running our solution: even though I'm running in debug mode
-startime = time.time()
 
 elf_cal = []    # list with the total calories each elf has
 count_cal = 0   # a count variable we will use in the loops
