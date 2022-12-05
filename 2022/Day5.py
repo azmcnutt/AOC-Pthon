@@ -96,9 +96,9 @@ for x in myset:
         for _ in reversed(temp):
             ship[t].insert(0,_)
 
-p1ans = ''
+p2ans = ''
 for s,c in ship.items():
     if len(c) > 0:
-        p1ans += c[0]
-print(f'Part 2 Answer is {p1ans}    {time.time() - startime}')
-# submit(p1ans, part='b', day = 5, year=2022)
+        p2ans += c[0]
+print(f'Part 2 Answer is {p2ans}    {time.time() - startime}')
+# submit(p2ans, part='b', day = 5, year=2022)
