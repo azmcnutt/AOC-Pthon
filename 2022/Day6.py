@@ -58,7 +58,7 @@ def findStartOfPacket2(data):
 p1ans = findStartOfPacket(myset[0])
 print(f'Part 1 Answer is {p1ans}    {time.time() - starttime}')
 # submit(p1ans, part='a', day = 6, year=2022)
-
+starttime = time.time()
 #for x in myset:
 #    p1ans = findStartOfPacket2(x)
 #    print(f'Part 2 Answer is {p1ans}    {time.time() - starttime}')
