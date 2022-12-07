@@ -46,7 +46,6 @@ $ ls
 # once the test data provides the right answer: replace test data with data from the puzzle input
 myset = get_data(day=7, year=2022).splitlines()
 
-# remove line feeds from the list
 starttime = time.time()
 folders = {}
 def getFolderSize(data,folder='total'):
@@ -73,15 +72,14 @@ def getFolderSize(data,folder='total'):
 myset.pop(0)
 getFolderSize(myset,'root')
 p1ans = 0
-for x in folders.values():
-    if x <= 100000:
-        p1ans += x
-print(f'Part 1 Answer is {p1ans}    {time.time() - starttime}')
-# submit(p1ans, part='a', day = 7, year=2022)
 p2ans = 0
 extra_space_req = 30000000 - (70000000 - folders['root'])
 for x in folders.values():
+    if x <= 100000:
+        p1ans += x
     if x >= extra_space_req and (p2ans == 0 or x < p2ans):
         p2ans = x
+print(f'Part 1 Answer is {p1ans}    {time.time() - starttime}')
+# submit(p1ans, part='a', day = 7, year=2022)
 print(f'Part 2 Answer is {p2ans}    {time.time() - starttime}')
 # submit(p1ans, part='a', day = 7, year=2022)
