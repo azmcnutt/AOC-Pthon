@@ -4,6 +4,7 @@ from copy import deepcopy
 from pprint import pprint
 from aocd import get_data
 from aocd import submit
+from functools import cache
 import time
 import hashlib
 import ctypes
@@ -42,7 +43,13 @@ for x in myset:
     ins[k]=v
 
 
+
+@cache
 def getWireValue(w):
+    
+    if w.isdigit():
+        return int(w)
+    temp=w+':'+ins[w]
     if ins[w].isdigit():
         return int(ins[w])
     elif 'AND' in ins[w]:
@@ -78,9 +85,14 @@ def getWireValue(w):
 #print(f'I: {getWireValue("i")}')
 #print(f'X: {getWireValue("x")}')
 #print(f'Y: {getWireValue("y")}')
-print(ins['a'])
+# print(ins['a'])
  
-print(f'Part 1 Answer is {getWireValue("a")}    {time.time() - starttime}')
+p1ans = getWireValue("a")
+
+print(f'Part 1 Answer is {p1ans}    {time.time() - starttime}')
 # submit(p1ans, part='a', day = 7, year=2022)
-# print(f'Part 2 Answer is {p2count}    {time.time() - starttime}')
+ins['b'] = str(p1ans)
+getWireValue.cache_clear()
+p2ans = getWireValue("a")
+print(f'Part 2 Answer is {p2ans}    {time.time() - starttime}')
 # submit(p1ans, part='a', day = 7, year=2022)
