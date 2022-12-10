@@ -195,27 +195,11 @@ for i in myset:
         calcSignal()
     else:
         _,y = i.split(' ')
-        #cycles += 1
-        #calcSignal()
-        #cycles += 1
-        #calcSignal()
         for _ in (1,2):
             cycles += 1
             calcSignal()
         X += int(y)
-        
-
-
-
-
-
-
-
-
-
 
 print(f'Part 1 Answer is {signal}    {time.time() - starttime}')
-# submit(p1ans, part='a', day = 7, year=2022)
 print(f'Part 2 Answer is:')
 print(crt)
-# submit(p1ans, part='a', day = 7, year=2022)
