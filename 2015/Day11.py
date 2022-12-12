@@ -20,9 +20,9 @@ cqjxxyzy
 cqjxjnds""".splitlines()
 
 # once the test data provides the right answer: replace test data with data from the puzzle input
-# myset = get_data(day=11, year=2015).splitlines()
+myset = get_data(day=11, year=2015).splitlines()
 
-def checkforDoubles():
+def checkforDoubles(p):
     first = ''
     for i in range(1,len(p)):
         if p[i] == p[i-1] and first == '':
@@ -30,7 +30,7 @@ def checkforDoubles():
         elif p[i] != first and p[i] == p[i-1]:
             return True
     return False
-def checkforThree():
+def checkforThree(p):
     for i in range(2,len((p))):
         if p[i] == l[p[i-1]] and p[i-1] == l[p[i-2]]:
             return True
@@ -89,7 +89,7 @@ letters = {
     't': 'u',
     'u': 'v',
     'v': 'w',
-    'w': 'z',
+    'w': 'x',
     'x': 'y',
     'y': 'z',
     'z': 'a',
@@ -97,7 +97,7 @@ letters = {
 
 badletters = ['i','o','l']
 
-for p in myset:
+def getNextPassword(p):
     p = list(p)
     for b in badletters:
         if b in p:
@@ -126,18 +126,13 @@ for p in myset:
                 p[-3] = letters[p[-3]]
             p[-2] = letters[p[-2]]
         p[-1] = letters[p[-1]]
-        if checkforDoubles() and checkforThree():
+        if checkforDoubles(p) and checkforThree(p):
             newpass = True
             nextpass = ''.join(p)
             break
-    print(nextpass)
+    return nextpass
 
-
-            
-
-
-
-#print(f'Part 1 Answer is {len(game)}')
-# submit(p1ans, part='a', day = 7, year=2022)
-# print(f'Part 2 Answer is {p2ans}')
-# submit(p1ans, part='a', day = 7, year=2022)
+p1ans = getNextPassword(myset[0])
+print(f'Part 1 Answer is {p1ans}')
+p2ans = getNextPassword(p1ans)
+print(f'Part 2 Answer is {p2ans}')

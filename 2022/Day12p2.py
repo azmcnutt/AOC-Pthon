@@ -61,6 +61,9 @@ for y in range(0,len(myset)):
                 if ord(c) - ord(l) <= 1:
                     g[(x,y)].append((p[0],p[1]))
 # pprint(g)
+
+# code from https://onestepcode.com/graph-shortest-path-python/
+# modified for AOC
 def shortest_path(graph, node1, node2):
     path_list = [[node1]]
     path_index = 0
