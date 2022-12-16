@@ -4,6 +4,7 @@ from aocd import get_data
 import re
 from time import time
 import sys
+from functools import cache
 
 
 
@@ -55,6 +56,7 @@ for d in myset:
     md = (abs(int(sx) - int(bx)) + abs(int(sy) - int(by)))
     sensors[(int(sx),int(sy))] = md
 
+@cache
 def check_point(x,y):
     # get the manhatan distance between (x,y) and s, if less than or = md then false
     for s,md in sensors.items():
@@ -64,33 +66,17 @@ def check_point(x,y):
 
 
 
-# get edge of sensor md + 1
-edge = set()
-foundit = False
-for s,md in sensors.items():
-    md += 1
-    for i in range(0,md + 1):
-        #u/l:
-        tx,ty = (s[0] - i,s[1] - (md - i))
-        # now check each edge point to see if one of the other areas intersects
-        if tx >= 0 and tx <= maxxy and ty >=0 and ty <= maxxy and not foundit:
-            foundit = check_point(tx,ty)
-            if foundit: break
-        #u/r:
-        tx,ty = ((s[0] - i,s[1] + (md - i)))
-        if tx >= 0 and tx <= maxxy and ty >=0 and ty <= maxxy and not foundit:
-            foundit = check_point(tx,ty)
-            if foundit: break
-        #d/l
-        tx,ty = ((s[0] + i,s[1] - (md - i)))
-        if tx >= 0 and tx <= maxxy and ty >=0 and ty <= maxxy and not foundit:
-            foundit = check_point(tx,ty)
-            if foundit: break
-        #d/r:
-        if tx >= 0 and tx <= maxxy and ty >=0 and ty <= maxxy and not foundit:
-            foundit = check_point(tx,ty)
-            if foundit: break
-        if foundit: break
-    if foundit: break
-print(f'Part 2 Answer is: {(tx * 4000000) + ty}   {starttime - time()}')
+def search_edges():# get edge of sensor md + 1
+    for s,md in sensors.items():
+        md += 1
+        for i in range(0,md + 1):
+            edges = lambda: [(s[0]-i,s[1]-(md-i)), (s[0]-i,s[1]+(md-i)), (s[0]+i,s[1]-(md-i)), (s[0]+i,s[1]-(md-i))]
+            #u/l:
+            for p in edges():
+            # now check each edge point to see if one of the other areas intersects
+                if p[0] >= 0 and p[0] <= maxxy and p[1] >=0 and p[1] <= maxxy:
+                    if check_point(p[0],p[1]): return p
+
+x,y = search_edges()
+print(f'Part 2 Answer is: {(x * 4000000) + y}   {time() - starttime}')
 
