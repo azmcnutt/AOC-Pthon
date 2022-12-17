@@ -4,6 +4,7 @@ from aocd import get_data
 import re
 from time import time
 import sys
+import itertools
 
 
 
@@ -33,7 +34,7 @@ Valve II has flow rate=0; tunnels lead to valves AA, JJ
 Valve JJ has flow rate=21; tunnel leads to valve II""".splitlines()
 
 # once the test data provides the right answer: replace test data with data from the puzzle input
-# myset = get_data(day=16, year=2022).splitlines()
+myset = get_data(day=16, year=2022).splitlines()
 
 # for i,d in enumerate(myset):
 #    print(f'{i}: {d}')
@@ -46,7 +47,7 @@ tunnels = {}
 flowrate = {}
 paths = {}
 opened = []
-scores = {}
+scores = []
 
 def shortest_path(graph, node1, node2):
     path_list = [[node1]]
@@ -98,36 +99,53 @@ for v,data in tunnels.items():
             paths[v][d] = path = shortest_path(tunnels,v,d)
 #pprint(paths)
 
-def under_pressure(current: str, time_left: int, vis : list = [], pressure: int = 0):
-    #print(current)
-    if time_left <= 0:
-        scores[pressure] = vis
-        return
-    visited = deepcopy(vis)
-    visited.append(current)
-    for next_hop in tunnels.keys():
-        #print(f'Starting: {next_hop}')
-        if next_hop not in visited and flowrate[next_hop] != 0 :
-            t = time_left
-            p: int = 0
-            t -= len(paths[current][next_hop]) - 1
-            if t <= 0:
-                scores[pressure] = visited
-                continue
-            t -= 1
-            p += (flowrate[next_hop] * t)
-            
-            if t != 0:
-                under_pressure(next_hop, t, deepcopy(visited), (pressure + p))
-            else:
-                scores[pressure] = visited
-                continue
-            #if p > temp_press: temp_press = p
-    scores[pressure] = visited
+def under_pressure(path: set, time: int):
+    p = 0
+    current = ''
+    for x in path:
+        if not current:
+            current = x
+            continue
+        time -= len(paths[current][x]) - 1
+        if time <= 0: return 0
+        current = x
+        time -= 1
+        p += (flowrate[current] * time)
+    return p
 
 
-x=under_pressure('AA', 30, []) 
-p1ans = max(scores.keys())
+v = []
+for a,b in flowrate.items():
+    if b != 0:
+        v.append(a)
+test = []
+for x in range(2,len(v) + 1):
+    test.extend(map(list,itertools.permutations(v,x)))
+#print(test)
 
-print(f'Part 1 Answer is: {p1ans}   {starttime - time()}')
+for x in test:
+    z = ['AA']
+    z.extend(x)
+    s = under_pressure(z,26)
+    if s:
+        if z == ['AA', 'JJ','BB','CC']:
+            pass
+        if z == ['AA', 'DD','HH','EE']:
+            pass
+        scores.append([s,z])
 
+p2ans = []
+for a,x in scores:
+    for b,y in scores:
+        if len(x[1:]) and len(y[1:]) and not set(x[1:]) & set(y[1:]):
+            if x[1:] == ['JJ','BB','CC'] and y[1:] == ['DD','HH','EE']:
+                pass
+            p2ans.append(a+b)
+print(f'Part 2 Answer is: {max(p2ans)}   {time() - starttime}')
+#test = [
+#    ['AA','JJ','BB','CC'],
+#    ['AA', 'DD','HH','EE'],
+#]
+
+#for a in test:
+#    print(under_pressure(a,26))

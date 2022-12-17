@@ -105,6 +105,7 @@ def under_pressure(current: str, time_left: int, vis : list = [], pressure: int 
         return
     visited = deepcopy(vis)
     visited.append(current)
+    scores[pressure] = visited
     for next_hop in tunnels.keys():
         #print(f'Starting: {next_hop}')
         if next_hop not in visited and flowrate[next_hop] != 0 :
@@ -120,14 +121,23 @@ def under_pressure(current: str, time_left: int, vis : list = [], pressure: int 
             if t != 0:
                 under_pressure(next_hop, t, deepcopy(visited), (pressure + p))
             else:
+                visited.append(next_hop)
                 scores[pressure] = visited
                 continue
             #if p > temp_press: temp_press = p
     scores[pressure] = visited
 
 
-x=under_pressure('AA', 30, []) 
+x=under_pressure('AA', 26, []) 
 p1ans = max(scores.keys())
 
 print(f'Part 1 Answer is: {p1ans}   {starttime - time()}')
-
+#pprint(scores)
+p2ans = []
+for a,x in scores.items():
+    for b,y in scores.items():
+        if len(x[1:]) and len(y[1:]) and not set(x[1:]) & set(y[1:]):
+            if x == ['AA', 'DD','HH','EE']:# and y == ['AA', 'DD','HH','EE']:
+                pass
+            p2ans.append(a+b)
+print(max(p2ans))
