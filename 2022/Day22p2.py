@@ -5,7 +5,9 @@ from time import time
 import re
 import sys
 
-#51232 too low
+# 51232 too low
+#115311 just right
+#129149 too high
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 # --- Day 22:  ---                                                                        #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
@@ -175,8 +177,8 @@ for x in moves:
                     nextpos = (curpos[1] - 50, 101)
                     nextdir = S
                 elif nextpos[0] == 50 and nextpos[1] >= 1 and nextpos[1] <= 50:
-                    nextpos = (1, curpos[1] + 100)
-                    nextdir = W
+                    nextpos = (1, 151 - curpos[1])
+                    nextdir = E
                 else:
                     print('missed one')
                     print(f'curpos: {curpos}')
@@ -190,6 +192,11 @@ for x in moves:
                 if nextpos in walls:
                     break
                 elif nextpos in paths:
+                    print('------------------------')
+                    print(f'curpos: {curpos}')
+                    print(f'curdir: {curdir}')
+                    print(f'nextpos: {nextpos}')
+                    print(f'nextdir: {nextdir}')
                     curpos = nextpos
                     if nextdir >= 0:
                         curdir = nextdir
