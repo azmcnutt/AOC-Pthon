@@ -5,7 +5,6 @@ from time import time
 import re
 import sys
 
-#51232 too low
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 # --- Day 23:  ---                                                                        #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
@@ -20,196 +19,153 @@ import sys
 
 
 # load sample data, copied and pasted from the site into list.  Each list item is one line of input
-myset = """        ...#
-        .#..
-        #...
-        ....
-...#.......#
-........#...
-..#....#....
-..........#.
-        ...#....
-        .....#..
-        .#......
-        ......#.
-
-10R5L5R10L4R5L5""".splitlines()
+myset = """..............
+..............
+.......#......
+.....###.#....
+...#...#.#....
+....#...##....
+...#.###......
+...##.#.##....
+....#..#......
+..............
+..............
+..............""".splitlines()
 
 # once the test data provides the right answer: replace test data with data from the puzzle input
-myset = get_data(day=22, year=2022).splitlines()
+myset = get_data(day=23, year=2022).splitlines()
 starttime = time()
 # for i,d in enumerate(myset):
 #    print(f'{i}: {d}')
 
-E = 0
-S = 1
-W = 2
-N = 3
-walls = set()
-paths = set()
-curpos = ()
-curdir = E
-inst = ''
-moves = []
-dirs = {
-    E: {
-        'R': S,
-        'L': N,
-    },
-    S: {
-        'R': W,
-        'L': E,
-    },
-    W: {
-        'R': N,
-        'L': S,
-    },
-    N: {
-        'R': E,
-        'L': W,
-    },
+e = set()
+adjacents = lambda x, y: [(x, y+1), (x+1, y), (x, y-1), (x-1, y), (x+1, y+1), (x+1, y-1), (x-1, y+1), (x-1, y-1)]
+check_n = lambda x, y: [(x+1, y-1), (x, y-1), (x-1, y-1)]
+check_s = lambda x, y: [(x+1, y+1), (x, y+1), (x-1, y+1)]
+check_w = lambda x, y: [(x-1, y+1), (x-1, y), (x-1, y-1)]
+check_e = lambda x, y: [(x+1, y+1), (x+1, y), (x+1, y-1)]
+nextdirs = {
+    'N': 'S',
+    'S': 'W',
+    'W': 'E',
+    'E': 'N',
 }
+curdir = 'N'
 
-for i,y in enumerate(myset):
-    if y == '':
-        inst = myset[i+1]
-        break
-    for j,x in enumerate(y):
-        if curpos == () and i == 0 and x == '.':
-            curpos = (j+1,i+1)
-        if x == '.':
-            paths.add((j+1,i+1))
-        elif x == '#':
-            walls.add((j+1,i+1))
-# print(curpos)
-# print('-----------------------------')
-# print(walls)
-# print('-----------------------------')
-# print(paths)
-# print('-----------------------------')
-# print(inst)
-
-temp_move = ''
-while inst:
-    if inst[0].isnumeric():
-        temp_move += inst[0]
-        inst = inst[1:]
-    else:
-        moves.append(int(temp_move))
-        temp_move = ''
-        moves.append(inst[0])
-        inst = inst[1:]
-if len(temp_move) > 0 and temp_move.isnumeric():
-    moves.append(int(temp_move))
-del temp_move
-del inst
-
-# pprint(dirs)
-
-# print(moves)
-
-for x in moves:
-    if type(x) == int:
-        # print(f'try to move {x} spaces.')
-        # print(f'from: {curpos}')
-        # I know there is a better way to determine direction, but.....  I'm lazy
-        
-        while(x):
-
-            nextdir = -1
-            if curdir == E:
-                d = (1,0)
-            elif curdir == S:
-                d = (0,1)
-            elif curdir == W:
-                d = (-1,0)
-            elif curdir == N:
-                d = (0,-1)
-            nextpos = (curpos[0] + d[0],curpos[1] + d[1])
-            if nextpos in walls:
-                break
-            elif nextpos in paths:
-                curpos = nextpos
-                x-=1
+def printmap(s):
+    miny = 1000000000
+    minx = 1000000000
+    maxx = 0
+    maxy = 0
+    for x,y in s:
+        if x > maxx: maxx = x
+        if x < minx: minx = x
+        if y > maxy: maxy = y
+        if y < miny: miny = y
+    for y in range(miny,maxy+1):
+        for x in range(minx,maxx+1):
+            if (x,y) in s:
+                print('#', end = '')
             else:
-                #wrap
-                # OMG, I hate 3D math.  I guess this is what I need to study before next year.
-                if nextpos[1] == 0: #falling off the top
-                    if nextpos[0] >= 51 and nextpos[0] <= 100: # falling off first grid
-                        nextpos = (1, curpos[0] + 100)
-                        nextdir = E
-                    elif nextpos[0] >= 101 and nextpos[0] <= 150: # falling off second grid
-                        nextpos = (curpos[0] - 100, 200)
-                        nextdir = N
-                elif nextpos[0] >= 151 and nextpos[1] >= 1 and nextpos[1] <= 50:
-                    nextpos = (100, 151 - curpos[1])
-                    nextdir = W
-                elif nextpos[0] >= 101 and nextpos[0] <= 150 and nextpos[1] == 51:
-                    nextpos = (100, curpos[0] - 50)
-                    nextdir = W
-                elif nextpos[0] == 101 and nextpos[1] >= 51 and nextpos[1] <= 100:
-                    nextpos = (curpos[1] + 50, 50)
-                    nextdir = N
-                elif nextpos[0] == 101 and nextpos[1] >= 101 and nextpos[1] <= 150:
-                    nextpos = (150, 151 - curpos[1])
-                    nextdir = W
-                elif nextpos[0] >= 51 and nextpos[0] <= 150 and nextpos[1] == 151:
-                    nextpos = (50, curpos[0] + 100)
-                    nextdir = W
-                elif nextpos[0] == 51 and nextpos[1] >= 151 and nextpos[1] <= 200:
-                    nextpos = (curpos[1] - 100, 150)
-                    nextdir = N
-                elif nextpos[0] >=1 and nextpos[0] <= 50 and nextpos[1] == 201:
-                    nextpos = (curpos[0] + 100, 1)
-                    nextdir = S
-                elif nextpos[0] == 0 and nextpos[1] >= 151 and nextpos[1] <= 200:
-                    nextpos = (curpos[1] - 100, 1)
-                    nextdir = S
-                elif nextpos[0] == 0 and nextpos[1] >= 101 and nextpos[1] <= 150:
-                    nextpos = (51, 151 - curpos[1])
-                    nextdir = E
-                elif nextpos[0] >= 1 and nextpos[0] <= 50 and nextpos[1] == 100:
-                    nextpos = (51, 50 + curpos[0])
-                    nextdir = E
-                elif nextpos[0] == 50 and nextpos[1] >= 51 and nextpos[1] <= 100:
-                    nextpos = (curpos[1] - 50, 101)
-                    nextdir = S
-                elif nextpos[0] == 50 and nextpos[1] >= 1 and nextpos[1] <= 50:
-                    nextpos = (1, curpos[1] + 100)
-                    nextdir = W
+                print('.', end = '')
+        print()
+
+def checkprogress(s):
+    miny = 1000000000
+    minx = 1000000000
+    maxx = 0
+    maxy = 0
+    for x,y in s:
+        if x > maxx: maxx = x
+        if x < minx: minx = x
+        if y > maxy: maxy = y
+        if y < miny: miny = y
+    
+    #print(f'X Width = {maxx - minx + 1}')
+    #print(f'Y Width = {maxy - miny + 1}')
+    #print(f'Area = {(maxx - minx + 1) * (maxy - miny + 1)}')
+    #print(f'Num Elves = {len(s)}')
+    #print(f'Empty Ground = {((maxx - minx + 1) * (maxy - miny + 1)) - len(s)}')
+    return ((maxx - minx + 1) * (maxy - miny + 1)) - len(s)
+
+
+for y, i in enumerate(myset):
+    for x, j in enumerate(i):
+        if j == '#':
+            e.add((x,y))
+        else:
+            pass
+#printmap(e)
+i = 1
+while True:
+    ep = []
+    moves = []
+    for x,y in e:
+        moving = False
+        for p in adjacents(x,y):
+            if p in e:
+                moving = True
+                break
+        if moving:
+            looking = curdir
+            for _ in range(0,4):
+                empty = True
+                if looking == 'N':
+                    for p in check_n(x,y):
+                        if p in e:
+                            empty = False
+                            break
+                elif looking == 'S':
+                    for p in check_s(x,y):
+                        if p in e:
+                            empty = False
+                            break
+                elif looking == 'W':
+                    for p in check_w(x,y):
+                        if p in e:
+                            empty = False
+                            break
+                elif looking == 'E':
+                    for p in check_e(x,y):
+                        if p in e:
+                            empty = False
+                            break
+                if empty:
+                    if looking == 'N':
+                        ep.append((x,y-1))
+                        moves.append([(x,y),(x,y-1)])
+                        break
+                    if looking == 'S':
+                        ep.append((x,y+1))
+                        moves.append([(x,y),(x,y+1)])
+                        break
+                    if looking == 'W':
+                        ep.append((x-1,y))
+                        moves.append([(x,y),(x-1,y)])
+                        break
+                    if looking == 'E':
+                        ep.append((x+1,y))
+                        moves.append([(x,y),(x+1,y)])
+                        break
                 else:
-                    print('missed one')
-                    print(f'curpos: {curpos}')
-                    print(f'curdir: {curdir}')
-                    print(f'nextpos: {nextpos}')
-                    sys.exit()
-                
+                    looking = nextdirs[looking]
+    if len(moves) == 0:
+        print(f'Part 2 Answer is: {i}')
+        print(time() - starttime)
+        sys.exit()
+    for f,t in moves:
+        if ep.count(t) == 1:
+            e.remove(f)
+            e.add(t)
+    curdir = nextdirs[curdir]
+    if i == 10:
+        print(f'Part 1 Answer is: {checkprogress(e)}')
+        print(time() - starttime)
+    i += 1
+    #print('--------------------------')
+    #printmap(e)
 
-
-
-                if nextpos in walls:
-                    break
-                elif nextpos in paths:
-                    curpos = nextpos
-                    if nextdir >= 0:
-                        curdir = nextdir
-                    x-=1
-                else:
-                    print('gotlost')
-                    print(f'curpos: {curpos}')
-                    print(f'curdir: {curdir}')
-                    print(f'nextpos: {nextpos}')
-                    sys.exit()
-
-        # print(f'to: {curpos}')
-    else:
-        # print(f'curdir is {curdir}, turn {x} to {dirs[curdir][x]}.')
-        curdir = dirs[curdir][x]
-
-# print('-------------------------------')
-# print(f'Current Position: {curpos}, facing {curdir}.')
-
-p1ans = (curpos[1] * 1000) + (4 * curpos[0]) + curdir
+p1ans = checkprogress(e)
 
 print(f'Part 1 Answer is: {p1ans}')
 print(time() - starttime)
