@@ -38,61 +38,61 @@ def getMaxGeods(c: list, rb: list, rs: list, t: int):
     CLA = 1
     OBS = 2
     GEO = 3
-    q = [] # Rather than use recursion, I am going to try using a queue list
-    q.append([rb,rs,t])
-    while q:
-        rob, res, time = q.pop(0)
-        time -= 1
+    # q = [] # Rather than use recursion, I am going to try using a queue list
+    # q.append([rb,rs,t])
+    while t >= 0:
+        t -= 1
         buildq = [0,0,0,0]
         # check to see if I can build a robot.  If so, add it to the build queue
-        if res[ORE] >= c[GEO][ORE] and res[OBS] >= c[GEO][OBS]:
+        if rs[ORE] >= c[GEO][ORE] and rs[OBS] >= c[GEO][OBS]:
             buildq[GEO] = 1
-        elif res[ORE] >= c[OBS][ORE] and res[CLA] >= c[OBS][CLA]:
+        elif rs[ORE] >= c[OBS][ORE] and rs[CLA] >= c[OBS][CLA]:
             buildq[OBS] = 1
         else:
-            if res[ORE] >= c[CLA][ORE]:
+            if rs[ORE] >= c[CLA][ORE]:
                 buildq[CLA] = 1
-            if res[ORE] >= c[ORE][ORE]:
+            if rs[ORE] >= c[ORE][ORE]:
                 buildq[ORE] = 1
         # now collect resources
-        res[ORE] += rob[ORE]
-        res[CLA] += rob[CLA]
-        res[OBS] += rob[OBS]
-        res[GEO] += rob[GEO]
-        if time > 0:
+        rs[ORE] += rb[ORE]
+        rs[CLA] += rb[CLA]
+        rs[OBS] += rb[OBS]
+        rs[GEO] += rb[GEO]
+        if t > 0:
             #add stuff to the queue
             if buildq[GEO]: # if we can build a GEO robot, do it always
-                robb = rob.copy()
-                resb = res.copy()
+                robb = rb.copy()
+                resb = rs.copy()
                 robb[GEO] += 1
                 resb[ORE] -= c[GEO][ORE]
                 resb[OBS] -= c[GEO][OBS]
-                q.append([robb,resb,time])
+                getMaxGeods(c,robb,resb,t)
             elif buildq[OBS]: # Ok, we can't build GEO, how about OBS
-                robb = rob.copy()
-                resb = res.copy()
+                robb = rb.copy()
+                resb = rs.copy()
                 robb[OBS] += 1
                 resb[ORE] -= c[OBS][ORE]
-                resb[OBS] -= c[OBS][CLA]
-                q.append([robb,resb,time])
+                resb[CLA] -= c[OBS][CLA]
+                getMaxGeods(c,robb,resb,t)
             else: # lets so everything else
                 #first do nothing
-                q.append(rob,res,time)
+                getMaxGeods(c,rb.copy(),rs.copy(),t)
                 if buildq[CLA]: # Add a CLA to the queue
-                    robb = rob.copy()
-                    resb = res.copy()
+                    robb = rb.copy()
+                    resb = rs.copy()
                     robb[CLA] += 1
                     resb[ORE] -= c[CLA][ORE]
-                    q.append([robb,resb,time])
+                    getMaxGeods(c,robb,resb,t)
                 if buildq[ORE]: # Add a CLA to the queue
-                    robb = rob.copy()
-                    resb = res.copy()
+                    robb = rb.copy()
+                    resb = rs.copy()
                     robb[ORE] += 1
                     resb[ORE] -= c[ORE][ORE]
-                    q.append([robb,resb,time])
+                    getMaxGeods(c,robb,resb,t)
         else: # Time has run out
-            if res[GEO] > geods: geods = res[GEO]
-            print(f'Rb: {rob}   Rs: {res}   MaxGeo: {geods}')
+            if rs[GEO] > geods: geods = rs[GEO]
+            print(f'Rb: {rb}   Rs: {rs}   MaxGeo: {geods}')
+            return
 
 
 
