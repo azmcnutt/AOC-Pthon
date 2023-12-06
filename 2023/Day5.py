@@ -7,6 +7,7 @@ from aocd import submit
 import time
 from math import trunc
 import re
+from functools import lru_cache
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 # --- Day 5: If You Give A Seed A Fertilizer  ---                                                               #
@@ -265,7 +266,9 @@ for y in range(x, len(myset)):
 # print(temperature_humidity)
 # print(humidity_location)
 p1ans = 0
-for s in seeds:
+
+@lru_cache()
+def map_the_seed(s):
     # first map the seed to soil
     # let the soil = the seed in case there is no match
     soil = s
@@ -297,12 +300,22 @@ for s in seeds:
         if hl[1] <= hum < (hl[1] + hl[2]):
             loc = hum + hl[0] - hl[1]
     # print(s, soil, fert, wat, lig, temp, hum, loc)
-    if 0 == p1ans or p1ans > loc:
-        p1ans = loc
+    return loc
 
 
-
-
+for s in seeds:
+    location = map_the_seed(s)
+    if 0 == p1ans or p1ans > location:
+        p1ans = location
+x = 0
 p2ans = 0
+while x < len(seeds):
+    for y in range(seeds[0], seeds[0] + seeds[1]):
+        location = map_the_seed(y)
+        if 0 == p2ans or p2ans > location:
+            p2ans = location
+    x += 2
+
+
 
 print(f'P1: {p1ans} and P2: {p2ans} in {time.time() - start_time} seconds.')
