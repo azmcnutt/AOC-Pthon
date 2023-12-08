@@ -356,23 +356,20 @@ while x < len(seeds):
 found_seed = False
 x = 0
 print(seed_ranges)
-for y in seed_ranges:
-    for s in range(y[0], y[1] + 1):
-        location = map_the_seed(s)
-        if 0 == p2ans or p2ans > location:
-            p2ans = location
+# for y in seed_ranges:
+#     for s in range(y[0], y[1] + 1):
+#         location = map_the_seed(s)
+#         if 0 == p2ans or p2ans > location:
+#             p2ans = location
 
 #
-# while not found_seed:
-#     possible_Seed = map_the_loc(x)
-#     for r in seed_ranges:
-#         if r[0] <= possible_Seed <= r[1]:
-#             found_seed = True
-#             p2ans = x
-#             print(f'Found Seed: {possible_Seed} at {x}')
-#             break
-#         else:
-#             x += 1
-# print(map_the_loc(43))
-# Part 2 answer: 10834442 (too high)
+while not found_seed:
+    possible_Seed = map_the_loc(x)
+    for r in seed_ranges:
+        if r[0] <= possible_Seed <= r[1]:
+            found_seed = True
+            p2ans = x
+            break
+    x += 1
+# Part 2 answer: 10834440
 print(f'P1: {p1ans} and P2: {p2ans} in {time.time() - start_time} seconds.')
