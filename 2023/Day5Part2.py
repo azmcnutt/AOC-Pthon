@@ -371,5 +371,5 @@ while not found_seed:
             p2ans = x
             break
     x += 1
-# Part 2 answer: 10834440
+
 print(f'P1: {p1ans} and P2: {p2ans} in {time.time() - start_time} seconds.')

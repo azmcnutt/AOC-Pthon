@@ -226,6 +226,5 @@ p2 = 0
 for g in gear_ratios:
     p2 += g
 
-# Current wrong answer:  349241 (too low)
-#                        550064
+
 print(f'P1: {p1} and P2: {p2} in {time.time() - start_time} seconds.')

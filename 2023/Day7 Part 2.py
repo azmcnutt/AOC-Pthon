@@ -133,7 +133,7 @@ QQQJA 483""".splitlines()
 
 # once the test data provides the right answer: replace test data with data from the puzzle input
 
-# myset = get_data(day=7, year=2023).splitlines()
+myset = get_data(day=7, year=2023).splitlines()
 
 # get the time we start running our solution: even though I'm running in debug mode
 start_time = time.time()
@@ -156,15 +156,22 @@ for x in myset:
     c = c.replace('A', 'E')
     c = c.replace('K', 'D')
     c = c.replace('Q', 'C')
-    c = c.replace('J', 'B')
+    c = c.replace('J', '1')
     c = c.replace('T', 'A')
+    jokers = x[0].count('J')
+    temp = x[0].replace('J', '')
     count = {}
-    for y in x[0]:
+    for y in temp:
         if y in count:
             count[y] += 1
         else:
             count[y] = 1
     count = sorted(count.values(), reverse=True)
+    # print(jokers)
+    # print(x[0],count,jokers)
+    if not count:
+        count = [0]
+    count[0] += jokers
     if count[0] == 5:
         c = '6' + c
     elif count[0] == 4:
@@ -184,7 +191,7 @@ for x in myset:
 # print(hands)
 # print()
 hands.sort(key=lambda y: y[2], reverse=False)
-pprint(hands)
+# pprint(hands)
 for idx, h in enumerate(hands):
     p1ans += (idx + 1) * int(h[1])
 print(f'P1: {p1ans} and P2: {p2ans} in {time.time() - start_time} seconds.')
