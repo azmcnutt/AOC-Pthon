@@ -119,7 +119,19 @@ from functools import lru_cache
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 # Part 2                                                                                                        #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+# The galaxies are much older (and thus much farther apart) than the researcher initially estimated.            #
 #                                                                                                               #
+# Now, instead of the expansion you did before, make each empty row or column one million times larger. That    #
+# is, each empty row should be replaced with 1000000 empty rows, and each empty column should be replaced with  #
+# 1000000 empty columns.                                                                                        #
+#                                                                                                               #
+# (In the example above, if each empty row or column were merely 10 times larger, the sum of the shortest paths #
+# between every pair of galaxies would be 1030. If each empty row or column were merely 100 times larger, the   #
+# sum of the shortest paths between every pair of galaxies would be 8410. However, your universe will need to   #
+# expand far beyond these values.)                                                                              #
+#                                                                                                               #
+# Starting with the same initial image, expand the universe according to these new rules, then find the length  #
+# of the shortest path between every pair of galaxies. What is the sum of these lengths?                        #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 # load sample data, copied and pasted from the site into list.  Each list item is one line of input
@@ -137,7 +149,7 @@ myset = """...#......
 
 # once the test data provides the right answer: replace test data with data from the puzzle input
 
-# myset = get_data(day=11, year=2023).splitlines()
+myset = get_data(day=11, year=2023).splitlines()
 
 # get the time we start running our solution: even though I'm running in debug mode
 start_time = time.time()
@@ -157,11 +169,12 @@ for x, r in enumerate(myset):
             all_y.add(y)
             galaxies.append((x, y))
 
-print(all_x, all_y)
-print(galaxies)
-print(max_x, max_y)
+# print(all_x, all_y)
+# print(galaxies)
+# print(max_x, max_y)
 
-def distance(point1, point2):
+
+def distance(point1, point2, expansion=1):
     x1, y1 = point1
     x2, y2 = point2
     d = abs(x1 - x2) + abs(y1 - y2)
@@ -172,12 +185,23 @@ def distance(point1, point2):
 
     for z in range(x1, x2 + 1):
         if z not in all_x:
-            d += 1
+            d += expansion
     for z in range(y1, y2 + 1):
         if z not in all_y:
-            d += 1
+            d += expansion
     return d
-#
-print(distance(galaxies[0], galaxies[2]))
+
+
+# Part 1
+for i1, g1 in enumerate(galaxies):
+    for i2, g2 in enumerate(galaxies):
+        if i1 < i2:
+            p1ans += distance(g1, g2)
+
+# Part 2
+for i1, g1 in enumerate(galaxies):
+    for i2, g2 in enumerate(galaxies):
+        if i1 < i2:
+            p2ans += distance(g1, g2, 999999)
 
 print(f'P1: {p1ans} and P2: {p2ans} in {time.time() - start_time} seconds.')
