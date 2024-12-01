@@ -35,14 +35,25 @@ p2 = 0
 left_list = []
 right_list = []
 
+# Split the input into a left and right list.
+# left_list and right_list are used to keep it consistent with the 
+# AOC problem.
 for x in aoc_input:
     l,r = x.split()
     left_list.append(int(l))
     right_list.append(int(r))
 
+# Because of how I solve for part one, it is easier to do part two first
+# Iterate through left_list and count the number of times the number
+# and count the number of times the number (x) appears in right_list.
+# The multiply the left_list number by the number of times it appears in
+# right_list.  Add the product to p2.
 for x in left_list:
     p2 += (x * right_list.count(x))
 
+# Now solve for part one.  Find the smallest number in left_ and right_list
+# and get the difference between them.  Add to p1 and then remove those
+# two numbers from the list.
 while left_list and right_list:
     min_left = min(left_list)
     min_right = min(right_list)
