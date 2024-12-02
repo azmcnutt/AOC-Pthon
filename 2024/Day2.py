@@ -46,13 +46,13 @@ def main():
     print(f'P1: {p1}, P2: {p2} in {time.time() - start_time} seconds.')
 
 def is_report_safe(r: list, d: bool = False) -> bool:
-    """Returns true is a provided report is safe.
+    """Returns true if a provided report is safe.
     r: a list of numbers to process as the report
     d: a True/False to allow report dampening.
         False does not permit one unsafe condition
         True will allow one unsafe condition.
     """
-    safe_report = True
+
     # r = r.split()
     r = [int(item) for item in r]
     # first lets determine if we are increasing or decreasing
@@ -81,7 +81,7 @@ def is_report_safe(r: list, d: bool = False) -> bool:
                     return False
             else:
                 return False
-    return safe_report
+    return True
 
 if __name__ == '__main__':
     main()
