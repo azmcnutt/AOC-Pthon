@@ -9,7 +9,7 @@ import time
 
 def main():
     # # # # # # # # # # # #
-    # --- Day 2: TBD  --- #
+    # --- Day 3: TBD  --- #
     # # # # # # # # # # # #
 
     # load sample data, copied and pasted from the site into list.
