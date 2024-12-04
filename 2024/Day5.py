@@ -9,7 +9,7 @@ import time
 
 def main():
     # # # # # # # # # # # #
-    # --- Day 0: TBD  --- #
+    # --- Day 5: TBD  --- #
     # # # # # # # # # # # #
 
     # load sample data, copied and pasted from the site into list.
@@ -20,7 +20,7 @@ def main():
 
     # once the test data provides the right answer:
     # replace test data with data from the puzzle input
-    # aoc_input = get_data(day=0, year=2024).splitlines()
+    # aoc_input = get_data(day=5, year=2024).splitlines()
 
     # Get the time to see how fast the solution runs.
     # I get the time after the input has been downloaded to test
