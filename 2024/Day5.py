@@ -1,11 +1,13 @@
 # import os
-# import sys
+import sys
 # import copy
 from pprint import pprint
 from aocd import get_data
 # from aocd import submit
 import time
 
+# Increase recursion limit
+sys.setrecursionlimit(2500)
 
 def main():
     # # # # # # # # # # # # # # # #
@@ -45,7 +47,7 @@ def main():
 
     # once the test data provides the right answer:
     # replace test data with data from the puzzle input
-    # aoc_input = get_data(day=5, year=2024).splitlines()
+    aoc_input = get_data(day=5, year=2024).splitlines()
 
     # Get the time to see how fast the solution runs.
     # I get the time after the input has been downloaded to test
@@ -72,12 +74,29 @@ def main():
         else:
             pages.append(line.split(','))
     
-    pprint(rules)
-    print()
-    pprint(pages)
-
+    for line in pages:
+        x, y = is_line_valid(line, rules)
+        if x:
+            p1 += y
+        else:
+            #print(f'y: {y}')
+            p2 += y
 
     print(f'P1: {p1}, P2: {p2} in {time.time() - start_time} seconds.')
+
+def is_line_valid(l, r):
+    for indx,p in enumerate(l):
+        if p in r.keys():
+            for x in r[p]:
+                if x in l[:indx]:
+                    # if the line violates a rule, move the violator
+                    # and run the is line valid again
+                    l.pop(l.index(x))
+                    l.insert(indx,x)
+                    _,y = is_line_valid(l, r)
+                    # once the line is valid, return the middle number
+                    return [False, int(l[int((len(l) - 1)/2)]),]
+    return [True, int(l[int((len(l) - 1)/2)]),]
 
 if __name__ == '__main__':
     main()
