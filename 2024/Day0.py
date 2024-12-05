@@ -17,7 +17,6 @@ def main():
     aoc_input = """Sample
     Data""".splitlines()
 
-
     # once the test data provides the right answer:
     # replace test data with data from the puzzle input
     # aoc_input = get_data(day=0, year=2024).splitlines()
