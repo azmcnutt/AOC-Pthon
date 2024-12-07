@@ -27,7 +27,7 @@ def main():
 
     # once the test data provides the right answer:
     # replace test data with data from the puzzle input
-    aoc_input = get_data(day=6, year=2024).splitlines()
+    # aoc_input = get_data(day=6, year=2024).splitlines()
     # too low 4579
 
     # Get the time to see how fast the solution runs.
@@ -38,53 +38,64 @@ def main():
     p1 = 0
     p2 = 0
 
+    
+    obstructions = set()
+    empties = set()
+    cur_dir = 'n'
+    cur_pos = (0,0,'n')
+    
+
+
+    for ix, x in enumerate(aoc_input):
+        for iy, y in enumerate(x):
+            if y == '.':
+                empties.add((ix, iy))
+            elif y == '#':
+                obstructions.add((ix, iy))
+            elif y == '^':
+                cur_pos = (ix, iy)
+
+    
+    
+    p1 = guard_path_length(cur_pos, cur_dir, obstructions, len(aoc_input), len(aoc_input[0]))
+
+    print(f'P1: {p1}, P2: {p2} in {time.time() - start_time} seconds.')
+
+def guard_path_length(s, d, o, max_x, max_y):
+    min_x = 0
+    min_y = 0
+    # max_x = len(aoc_input)
+    #max_y = len(aoc_input[0])
+    visited = set()
     next_dirs = {
         'n': 'e',
         'e': 's',
         's': 'w',
         'w': 'n',
     }
-    cur_dir = 'n'
+    
     dirs = {
         'n': (-1, 0),
         'e': (0, 1),
         's': (1,0),
         'w': (0,-1),
     }
-    obstructions = set()
-    visited = set()
-    cur_pos = (0,0)
-    min_x = 0
-    min_y = 0
-    max_x = len(aoc_input)
-    max_y = len(aoc_input[0])
-
-
-    for ix, x in enumerate(aoc_input):
-        for iy, y in enumerate(x):
-            if y == '#':
-                obstructions.add((ix, iy))
-            elif y == '^':
-                cur_pos = (ix, iy)
-
-    while(cur_pos[0] >= min_x and
-          cur_pos[0] < max_x and
-          cur_pos[1] >= min_y and
-          cur_pos[1] < max_y
+    while(s[0] >= min_x and
+          s[0] < max_x and
+          s[1] >= min_y and
+          s[1] < max_y
           ):
-        visited.add(cur_pos)
+        visited.add(s)
         while True:
-            n = (cur_pos[0] + dirs[cur_dir][0],
-                 cur_pos[1] + dirs[cur_dir][1])
-            if n not in obstructions:
-                cur_pos = n
+            n = (s[0] + dirs[d][0],
+                 s[1] + dirs[d][1],
+                 )
+            if n not in o:
+                s = n
                 break
             else:
-                cur_dir = next_dirs[cur_dir]
-    
-    p1 = len(visited)
-
-    print(f'P1: {p1}, P2: {p2} in {time.time() - start_time} seconds.')
+                d = next_dirs[d]
+    return(len(visited))
 
 if __name__ == '__main__':
     main()
