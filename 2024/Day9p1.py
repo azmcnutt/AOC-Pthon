@@ -27,7 +27,7 @@ def main():
     start_time = time.time()
 
     p1 = 0
-    p2 = 0
+   
     data_map = {}
     data_index = 0
 
@@ -77,7 +77,7 @@ def main():
                     break  
 
 
-    print(f'P1: {p1}, P2: {p2} in {time.time() - start_time} seconds.')
+    print(f'P1: {p1} in {time.time() - start_time} seconds.')
 
 
 

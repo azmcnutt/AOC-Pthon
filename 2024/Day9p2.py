@@ -16,6 +16,7 @@ def main():
     # Each list item is one line of input
     aoc_input = """2333133121414131402"""
     # P1: 1928
+    # P2: 2858
 
     # once the test data provides the right answer:
     # replace test data with data from the puzzle input
@@ -26,58 +27,57 @@ def main():
     # the speed of my program, not the speed of my Internet connection.
     start_time = time.time()
 
-    p1 = 0
     p2 = 0
-    data_map = {}
-    data_index = 0
+    counter = 0
+    fs = []
 
     for indx, x in enumerate(aoc_input):
         if indx % 2 == 0:
-            data_map[data_index] = int(x)
-            data_index += 1
-        
-    # pprint(data_map)
-    data_index = 0
-    for indx, x in enumerate(aoc_input):
-        x = int(x)
-        if indx % 2 == 0:
-            #print(f'Index: {indx} - Number: {x}')
-            for _ in range(x):
-                # print(f'{p1} += {data_index} * {indx}')
-                # p1 += data_index * indx
-                # data_index += 1
-                # print(f'{p1} += {data_index} * {list(data_map.keys())[0]}')
-                p1 += data_index * list(data_map.keys())[0]
-                data_index += 1
-            del data_map[list(data_map.keys())[0]]
-            if not data_map:
+            fs.append((counter, int(x)))
+            counter += 1
+        elif int(x) != 0:
+            fs.append(('.',int(x)))
+    counter = 0
+
+    end_ptr = len(fs) - 1
+    a = len(fs) - 1
+    b = 0
+    while a > 0:
+        b = 0
+        if fs[a][0] == '.':
+            a -= 1
+            continue
+        while b < len(fs):
+            if b >= a:
                 break
+            elif fs[b][0] != '.':
+                b += 1
+                continue
+            elif fs[a][1] == fs[b][1]:
+                fs[b] = fs[a]
+                fs[a] = ('.',fs[a][1])
+                b += 1
+                break
+            elif fs[a][1] < fs[b][1]:
+                fs.insert(b + 1,('.',fs[b][1] - fs[a][1]))
+                a += 1
+                fs[b] = fs[a]
+                fs[a] = ('.',fs[a][1])
+                b += 1
+                break
+            else:
+                b += 1
+        a -= 1
+    
+    for a in fs:
+        if a[0] == '.':
+            counter += a[1]
         else:
-            if not data_map:
-                break
-            if len(data_map) == 1:
-                for _ in range(data_map[list(data_map.keys())[-1]]):
-                    # print(f'{p1} += {data_index} * {list(data_map.keys())[-1]}')
-                    p1 += data_index * list(data_map.keys())[-1]
-                    data_index += 1
-                del data_map[list(data_map.keys())[-1]]
-                break
-            for _ in range(x):
-                z = 0
-                while z == 0:
-                    if data_map[list(data_map.keys())[-1]] <= 0:
-                        del data_map[list(data_map.keys())[-1]]
-                    else:
-                        z = list(data_map.keys())[-1]
-                        data_map[list(data_map.keys())[-1]] -= 1
-                # print(f'{p1} += {data_index} * {z}')
-                p1 += data_index * z
-                data_index += 1
-                if not data_map:
-                    break  
+            for b in range(a[1]):
+                p2 += counter * a[0]
+                counter += 1
 
-
-    print(f'P1: {p1}, P2: {p2} in {time.time() - start_time} seconds.')
+    print(f'P2: {p2} in {time.time() - start_time} seconds.')
 
 
 
