@@ -69,9 +69,7 @@ MMMISSJEEE""".splitlines()
                 gardens[b].append((x,y))
             else:
                 gardens[b] = [(x,y)]
-
-    # group(gardens['I'])
-
+    
     for k, v in gardens.items():
         groups = group(v)
         for g in groups:
@@ -80,8 +78,6 @@ MMMISSJEEE""".splitlines()
             one, two = calc_garden_p1(g)
             p1 += one
             p2 += two
-
-
     print(f'P1: {p1}, P2: {p2} in {time.time() - start_time} seconds.')
 
 def calc_garden_p1(garden):
@@ -183,42 +179,6 @@ def calc_garden_p1(garden):
             (g[0] -1, g[1] - 1) not in garden
         ):
             sides += 1
-        
-        # # Up U:
-        # if ((g[0] - 1, g[1]) not in garden and
-        #     (g[0], g[1] - 1) in garden and
-        #     (g[0], g[1] + 1) in garden and
-        #     (g[0] - 1, g[1] - 1) in garden and
-        #     (g[0] - 1, g[1] + 1) in garden
-        # ):
-        #     sides += 1
-        # # Right U
-        # elif ((g[0], g[1] + 1) not in garden and
-        #     (g[0] - 1, g[1]) in garden and
-        #     (g[0] + 1, g[1]) in garden and
-        #     (g[0] - 1, g[1] + 1) in garden and
-        #     (g[0] + 1, g[1] + 1) in garden
-        # ):
-        #     sides += 1
-        # # Down U:
-        # if ((g[0] + 1, g[1]) not in garden and
-        #     (g[0], g[1] - 1) in garden and
-        #     (g[0], g[1] + 1) in garden and
-        #     (g[0] + 1, g[1] - 1) in garden and
-        #     (g[0] + 1, g[1] + 1) in garden
-        # ):
-        #     sides += 1
-        #  # Left U
-        # elif ((g[0], g[1] - 1) not in garden and
-        #     (g[0] - 1, g[1]) in garden and
-        #     (g[0] + 1, g[1]) in garden and
-        #     (g[0] - 1, g[1] - 1) in garden and
-        #     (g[0] + 1, g[1] - 1) in garden
-        # ):
-        #     sides += 1
-            
-    # print(area, sides)
-
     return [area * perimeter, area * sides]
 
 def group(points):
