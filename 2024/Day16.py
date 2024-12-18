@@ -1,26 +1,20 @@
 # import os
-import sys
-import copy
+# import sys
+# import copy
 # from pprint import pprint
 from aocd import get_data
 # from aocd import submit
 import time
 
-sys.setrecursionlimit(6000)
+import heapq
 
-walls = set()
-maze = set()
-paths = []
-max_x = 0
-max_y = 0
-dirs = {
-    (-1,0): [(-1,0),(0,-1),(0,1)],
-    (1,0): [(1,0),(0,-1),(0,1)],
-    (0,-1): [(0,-1),(1,0),(-1,0)],
-    (0,1): [(0,1),(1,0),(-1,0)],
-}
-best_score = 0
-path = {}
+
+DIRECTIONS = [
+    {"x": 1, "y": 0},
+    {"x": 0, "y": 1},
+    {"x": -1, "y": 0},
+    {"x": 0, "y": -1},
+]
 
 
 def main():
@@ -28,8 +22,9 @@ def main():
     # --- Day 16: Reindeer Maze --- #
     # # # # # # # # # # # # # # # # #
 
-    # Some code ideas from:
-    # https://www.reddit.com/r/adventofcode/comments/1hfibxy/2024_day_16_help_pls/
+    # Code from:
+    # https://github.com/ayoubzulfiqar/advent-of-code/blob/main/2024/Python/Day16/part_1.py
+    # Leaning how dijkstra and heapq works
 
 
     # load sample data, copied and pasted from the site into list.
@@ -82,59 +77,121 @@ def main():
 
     p1 = 0
     p2 = 0
-    global max_x
-    global max_y
-    global path
-    max_x = len(aoc_input[0])
-    max_y = len(aoc_input)
-    initial_dir = (1,0)
+
+    parsed = parse_grid(aoc_input)
+    distances = dijkstra(parsed["forward"], parsed["start"], False)
     
+    p1 = distances.get(f"{parsed['end']['x']},{parsed['end']['y']}", float("inf"))
 
-    for iy, y in enumerate(aoc_input):
-        for ix, x in enumerate(y):
-            path[(ix, iy)] = int(10e9)
-            if x == '.':
-                maze.add((ix, iy))
-            elif x == '#':
-                walls.add((ix, iy))
-            elif x == 'S':
-                maze.add((ix, iy))
-                start = (ix, iy)
-            elif x == 'E':
-                maze.add((ix, iy))
-                end = (ix, iy)
+    from_start = dijkstra(parsed["forward"], parsed["start"], False)
+    to_end = dijkstra(parsed["reverse"], parsed["end"], True)
 
-    p1 = find_trail(start, initial_dir, 0, set(), end)
+    end_key = f"{parsed['end']['x']},{parsed['end']['y']}"
+    target = from_start[end_key]
+    spaces = set()
+
+    for position in from_start:
+        if (
+            position != end_key
+            and from_start[position] + to_end.get(position, float("inf")) == target
+        ):
+            x, y, *_ = position.split(",")  # Unpack and ignore direction in the key
+            spaces.add(f"{x},{y}")
+    p2 = len(spaces)
 
     print(f'P1: {p1}, P2: {p2} in {time.time() - start_time} seconds.')
 
-def find_trail(pos, cur_dir, score, visited, end):
-    global path
+class MinHeap:
+    """
+    Min heap implementation using heapq library
+    """
 
-    if pos == end:
-        path[pos] = min(path[pos],score)
-        print(score)
-        return path[end]
-    
-    if pos in visited:
-        if path[pos] <= score:
-            return path[end]
-        path[pos] = score
-    else:
-        visited.add(pos)
-        path[pos] = score
+    def __init__(self):
+        self.heap = []
 
-    for d in dirs[cur_dir]:
-        next_pos = (pos[0] + d[0], pos[1] + d[1])
-        s = score
-        if cur_dir == d:
-            s += 1
-        else:
-            s += 1001
-        if next_pos in maze:
-            new_visited = copy.deepcopy(visited)
-            find_trail(next_pos,d,s,new_visited, end)
-    return path[end]
+    def insert(self, element):
+        heapq.heappush(self.heap, element)
+
+    def extract_min(self):
+        return heapq.heappop(self.heap)
+
+    def size(self):
+        return len(self.heap)
+
+def dijkstra(graph, start, directionless):
+    queue = MinHeap()
+    distances = {}
+
+    starting_key = (
+        f"{start['x']},{start['y']},0"
+        if not directionless
+        else f"{start['x']},{start['y']}"
+    )
+    queue.insert((0, starting_key))
+    distances[starting_key] = 0
+
+    while queue.size() > 0:
+        current_score, current_node = queue.extract_min()
+
+        if distances[current_node] < current_score:
+            continue
+
+        if current_node not in graph:
+            continue
+
+        for next_node, weight in graph[current_node].items():
+            new_score = current_score + weight
+            if next_node not in distances or distances[next_node] > new_score:
+                distances[next_node] = new_score
+                queue.insert((new_score, next_node))
+
+    return distances
+
+def parse_grid(grid):
+    width, height = len(grid[0]), len(grid)
+
+    start = {"x": 0, "y": 0}
+    end = {"x": 0, "y": 0}
+    forward = {}
+    reverse = {}
+
+    for y in range(height):
+        for x in range(width):
+            if grid[y][x] == "S":
+                start = {"x": x, "y": y}
+            if grid[y][x] == "E":
+                end = {"x": x, "y": y}
+
+            if grid[y][x] != "#":
+                for i, direction in enumerate(DIRECTIONS):
+                    position = {"x": x + direction["x"], "y": y + direction["y"]}
+
+                    key = f"{x},{y},{i}"
+                    move_key = f"{position['x']},{position['y']},{i}"
+
+                    if (
+                        0 <= position["x"] < width
+                        and 0 <= position["y"] < height
+                        and grid[position["y"]][position["x"]] != "#"
+                    ):
+                        forward.setdefault(key, {})[move_key] = 1
+                        reverse.setdefault(move_key, {})[key] = 1
+
+                    for rotate_key in [
+                        f"{x},{y},{(i + 3) % 4}",
+                        f"{x},{y},{(i + 1) % 4}",
+                    ]:
+                        forward.setdefault(key, {})[rotate_key] = 1000
+                        reverse.setdefault(rotate_key, {})[key] = 1000
+
+    for i in range(len(DIRECTIONS)):
+        key = f"{end['x']},{end['y']}"
+        rotate_key = f"{end['x']},{end['y']},{i}"
+
+        forward.setdefault(rotate_key, {})[key] = 0
+        reverse.setdefault(key, {})[rotate_key] = 0
+
+    return {"start": start, "end": end, "forward": forward, "reverse": reverse}
 
 if __name__ == '__main__':
     main()
