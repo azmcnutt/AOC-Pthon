@@ -1,5 +1,5 @@
 # import os
-# import sys
+import sys
 # import copy
 # from pprint import pprint
 from aocd import get_data
@@ -44,7 +44,7 @@ Program: 0,3,5,4,3,0""".splitlines()
     start_time = time.time()
 
     p1 = ''
-    p2 = 1
+    p2 = ''
     program = []
     original_program = ''
 
@@ -64,16 +64,69 @@ Program: 0,3,5,4,3,0""".splitlines()
             temp = x[9:].split(',')
             program = [int(item) for item in temp]
     
-    while pointer < len(program):
-        ret = instructions(program[pointer], program[pointer + 1])
-        if ret is not None:
-            if not p1:
-                p1 = str(ret)
-            else:
-                p1 += ',' + str(ret)
+    # while pointer < len(program):
+    #     ret = instructions(program[pointer], program[pointer + 1])
+    #     if ret is not None:
+    #         if not p1:
+    #             p1 = str(ret)
+    #         else:
+    #             p1 += ',' + str(ret)
+    
+    # Part 2 Programmatically
+    # int('5322353701100', 8),
+    p = original_program.split(',')
+    print(p)
+    search_list = [
+        int('0', 8),
+        int('1', 8),
+        int('2', 8),
+        int('3', 8),
+        int('4', 8),
+        int('5', 8),
+        int('6', 8),
+        int('7', 8),
+    ]
+
+    for _ in range(2):
+        for a in search_list:
+            pointer = 0
+            ans = ''
+            reg_a = a
+            reg_b = 0
+            reg_c = 0
+            program = [int(item) for item in temp]
+            while pointer < len(program):
+                ret = instructions(program[pointer], program[pointer + 1])
+                if ret is not None:
+                    if not ans:
+                        ans = str(ret)
+                    else:
+                        ans += ',' + str(ret)
+            print(f'{a}:{oct(a)}: {ans} ({original_program})')
+            if str(ans)[0] == p[-1]:
+                p.pop(-1)
+                print(f'{a}:{oct(a)}: {ans} ({original_program})')
+                p2 = ans.replace(',', '')
+                break
+        search_list = [
+            int(str(p2) + '0', 8),
+            int(str(p2) + '1', 8),
+            int(str(p2) + '2', 8),
+            int(str(p2) + '3', 8),
+            int(str(p2) + '4', 8),
+            int(str(p2) + '5', 8),
+            int(str(p2) + '6', 8),
+            int(str(p2) + '7', 8),
+        ]
+
+
+    
+
+
+    sys.exit()
     
     # part 2 brute force:
-    # https://www.reddit.com/r/adventofcode/comments/1hgcuw8/2024_day_17_part_2_any_hints_folks/
+    # https://www.reddit.com/r/adventofcode/comments`/1hgcuw8/2024_day_17_part_2_any_hints_folks/
     p2 = 0
     mylist = [
         # int('5322353701100', 8),
