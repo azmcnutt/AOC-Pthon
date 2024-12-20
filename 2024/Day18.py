@@ -73,7 +73,7 @@ def main():
         maze.add((int(loc[0]), int(loc[1])))
         if not a_star(maze, start, end):
             p2 = f'{loc[0]},{loc[1]}'
-
+        
     print(f'P1: {p1}, P2: {p2} in {time.time() - start_time} seconds.')
 
 def heuristic(a, b):
