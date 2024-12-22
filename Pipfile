@@ -6,6 +6,8 @@ name = "pypi"
 [packages]
 advent-of-code-data = "*"
 browser-cookie3 = "*"
+tqdm = "*"
+numpy = "*"
 
 [dev-packages]
 pylint = "*"

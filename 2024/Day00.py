@@ -2,6 +2,7 @@
 # import sys
 # import copy
 # from pprint import pprint
+# from functools import cache
 from aocd import get_data
 # from aocd import submit
 import time
