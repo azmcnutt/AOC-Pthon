@@ -4,6 +4,7 @@
 # from pprint import pprint
 # from functools import cache
 from aocd import get_data
+from tqdm import tqdm
 # from aocd import submit
 import time
 
