@@ -70,7 +70,7 @@ tnw OR pbm -> gnj""".splitlines()
 
     # once the test data provides the right answer:
     # replace test data with data from the puzzle input
-    # aoc_input = get_data(day=24, year=2024).splitlines()
+    aoc_input = get_data(day=24, year=2024).splitlines()
 
     # Get the time to see how fast the solution runs.
     # I get the time after the input has been downloaded to test
@@ -104,6 +104,7 @@ tnw OR pbm -> gnj""".splitlines()
     for _, z in tqdm(zs.items()):
         binary += str(z)
     p1 = int(binary, 2)
+    p2 = part_two()
 
     print(f'P1: {p1}, P2: {p2} in {time.time() - start_time} seconds.')
 
@@ -126,6 +127,38 @@ def solve_gate(g):
             print(f' error on gate {g} with {a} {f} {b}')
         return gates[g]
 
+def part_two():
+    # process modified from:
+    # https://github.com/michaeljgallagher/Advent-of-Code/blob/master/2024/24.py
+    global rules, gates, zs
+    return ",".join(
+        sorted(
+            c
+            for c, (a, op, b) in rules.items()
+            if (
+                (c.startswith("z") and op != "XOR" and c != "z45")
+                or (
+                    op == "XOR"
+                    and all(not x.startswith(("x", "y", "z")) for x in (a, b, c))
+                )
+                or (
+                    op == "AND"
+                    and "x00" not in (a, b)
+                    and any(
+                        c in (aa, bb) and op2 != "OR"
+                        for (aa, op2, bb) in rules.values()
+                    )
+                )
+                or (
+                    op == "XOR"
+                    and any(
+                        c in (aa, bb) and op2 == "OR"
+                        for (aa, op2, bb) in rules.values()
+                    )
+                )
+            )
+        )
+    )
 
 if __name__ == '__main__':
     main()
