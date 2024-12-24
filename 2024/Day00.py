@@ -11,7 +11,7 @@ import time
 
 def main():
     # # # # # # # # # # # #
-    # --- Day 0: TBD ---  #
+    # --- Day  0: TBD --- #
     # # # # # # # # # # # #
 
     # load sample data, copied and pasted from the site into list.
