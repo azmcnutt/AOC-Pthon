@@ -10,14 +10,51 @@ import time
 
 
 def main():
-    # # # # # # # # # # # #
-    # --- Day 25: TBD --- #
-    # # # # # # # # # # # #
+    # # # # # # # # # # # # # # # # # #
+    # --- Day 25: Code Chronicle ---  #
+    # # # # # # # # # # # # # # # # # #
 
     # load sample data, copied and pasted from the site into list.
     # Each list item is one line of input
-    aoc_input = """Sample
-    Data""".splitlines()
+    aoc_input = """#####
+.####
+.####
+.####
+.#.#.
+.#...
+.....
+
+#####
+##.##
+.#.##
+...##
+...#.
+...#.
+.....
+
+.....
+#....
+#....
+#...#
+#.#.#
+#.###
+#####
+
+.....
+.....
+#.#..
+###..
+###.#
+###.#
+#####
+
+.....
+.....
+.....
+#....
+#.#..
+#.#.#
+#####""".splitlines()
 
     # once the test data provides the right answer:
     # replace test data with data from the puzzle input
@@ -30,6 +67,11 @@ def main():
 
     p1 = 0
     p2 = 0
+
+    locks = {}
+    keys = {}
+
+    
 
     print(f'P1: {p1}, P2: {p2} in {time.time() - start_time} seconds.')
 
