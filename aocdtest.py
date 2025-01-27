@@ -8,6 +8,6 @@ import time
 from aocd import get_data
 print(os.environ['AOC_SESSION'])
 #myset = open(os.path.join(sys.path[0], '2022\\input2.txt')).readlines()
-myset = get_data(day=2, year=2022).splitlines()
+myset = get_data(day=21, year=2015).splitlines()
 pprint(myset)
 #print(type(myset))
